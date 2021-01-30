@@ -13,43 +13,12 @@ const getFonts = () => {
   });
 }
 
-var WindowsAzure = require('azure-mobile-apps-client');
-
-// Create a reference to the Azure App Service
-var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
-
-var bookTable = client.getTable("Book");
-
-/**
- * Process the results that are received by a call to table.read()
- *
- * @param {Object} results the results as a pseudo-array
- * @param {int} results.length the length of the results array
- * @param {Object} results[] the individual results
- */
-function success(results) {
-  var numItemsRead = results.length;
-
-  for (var i = 0 ; i < results.length ; i++) {
-      var row = results[i];
-      //console.log(row);
-  }
-}
-
-function failure(error) {
-   throw new Error('Error loading data: ', error);
-}
-
-/*bookTable
-   .read()
-   .then(success, failure);*/
-
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   if (fontsLoaded) {
     return (
-      <Navigator theme='light' headerMode='none'/>
+      <Navigator theme='light' headerMode='none' style={{flex: 1}} />
     );
   } else {
     return (
