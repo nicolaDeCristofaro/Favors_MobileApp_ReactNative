@@ -11,7 +11,6 @@ import FavorDetails from '../screens/favorDetails';
 import Search from '../screens/search';
 import Add from '../screens/add';
 import Account from '../screens/account';
-import { Header } from "../components/header";
 
 
 const HomeDetailsScreens = {
