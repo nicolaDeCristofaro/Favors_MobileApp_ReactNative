@@ -8,8 +8,10 @@ export const globalStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
-    marginTop: 70,
+    padding: 15,
+    paddingTop: 70,
+    paddingBottom:0,
+    backgroundColor: '#171F33',
   },
 });
 

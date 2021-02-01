@@ -11,6 +11,7 @@ import FavorDetails from '../screens/favorDetails';
 import Search from '../screens/search';
 import Add from '../screens/add';
 import Account from '../screens/account';
+import { Header } from "../components/header";
 
 
 const HomeDetailsScreens = {
@@ -24,9 +25,11 @@ const HomeDetailsScreens = {
 
 const HomeDetailsStack = createStackNavigator(HomeDetailsScreens, {
   defaultNavigationOptions:{
-    headerMode: 'screen',
-    headerTransparent: 'true',
-  }
+    headerStyle: { backgroundColor: 'red'},
+    headerTransparent: true,
+    headerTitleAlign: 'center',
+    headerTintColor: 'white',
+  },
 });
 
 const TabScreens = {
@@ -51,7 +54,10 @@ const AuthScreens = {
   };
 
 
-const AuthStack = createStackNavigator(AuthScreens, {headerMode: 'none'});
+const AuthStack = createStackNavigator(AuthScreens, {
+    headerMode: 'none',
+});
+
 const TabNavigator = createBottomTabNavigator(TabScreens, {
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
@@ -86,6 +92,7 @@ const TabNavigator = createBottomTabNavigator(TabScreens, {
       inactiveTintColor: '#586589',  // inactive icon color
       style: {
           backgroundColor: '#171F33', // TabBar background
+          borderTopColor: '#171F33',
       }
   },
 });

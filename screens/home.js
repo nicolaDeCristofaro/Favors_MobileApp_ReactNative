@@ -57,6 +57,7 @@ export default function Home({ navigation }) {
           <FlatList
             data={favors}
             keyExtractor={({ id }, index) => id}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={ () => navigation.navigate('FavorDetails', item )}>
                 <Card>

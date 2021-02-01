@@ -5,25 +5,29 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 export default function Card(props) {
   return (
     <View style={styles.cardContainer}>
-        <View style={styles.postOwner}>
-            <Ionicons name={'ios-person'} size={18} />
-            <Text style={{ paddingTop: 1, fontSize: 16, fontWeight: 'bold'}}> Max </Text>
-        </View>
         <View style={styles.card}>
+            <View style={styles.postOwner}>
+                <Ionicons name={'ios-person'} size={18} />
+                <Text style={{ paddingTop: 1, fontSize: 16, fontWeight: 'bold'}}> Max </Text>
+            </View>
             <View style={styles.cardContent}>
                 <Image
                 source={require("../assets/home-cleaning.jpg")}
                 style={{
                     height: 115,
                     width: '100%',
-                    borderRadius: 15,
                 }}
                 />
-                <View style={{ padding: 10, width: 280 }}>
-                    <Text>Title</Text>
-                    <Text style={{ color: "#777", paddingTop: 5 }}>
-                        Description of the image
-                    </Text>
+                <View style={{ padding: 10, width: '100%' }}>
+                    <Text style={styles.titlePost}>Title</Text>
+                    <View style={styles.keywordsArea}>
+                      <Text style={styles.keyword}>
+                          #keyword1
+                      </Text>
+                      <Text style={styles.keyword}>
+                          #keyword1
+                      </Text>
+                    </View>
                 </View>
             </View>
         </View>
@@ -38,19 +42,34 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
     elevation: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#e4d0e3',
     overflow: 'hidden',
     marginHorizontal: 2,
     marginVertical: 6,
   },
   cardContent: {
-    marginHorizontal: 15,
-    marginVertical: 20,
+    marginVertical: 5,
   },
   postOwner: {
       flexDirection: 'row',
-      marginLeft: 5,
-      padding: 5,
+      padding: 10,
+      paddingBottom: 5,
       fontWeight: 'bold',
+  },
+  titlePost: {
+    fontWeight: 'bold',
+    color: '#320032',
+    fontSize: 16,
+  },
+  keywordsArea: {
+    flexDirection: 'row',
+  },
+  keyword: {
+    color: 'white',
+    fontWeight: 'bold',
+    backgroundColor: 'violet',
+    marginRight: 5,
+    padding: 1,
+    borderRadius: 5,
   }
 });
