@@ -11,7 +11,7 @@ export default function FavorDetails({ navigation }) {
     return (
     <View style={globalStyles.container}>
         <Text style={globalStyles.titleText}>Favor Details page</Text>
-        <Text> {navigation.getParam('name')} </Text>
+        <Text> {navigation.getParam('title')} </Text>
         <Button title='Back to Home' onPress={pressHandler} />
       </View>
     )

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { globalStyles } from '../styles/global'
 import Card from '../components/card';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Home({ navigation }) {
 
@@ -14,7 +13,7 @@ export default function Home({ navigation }) {
   // Create a reference to the Azure App Service
   var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
 
-  var bookTable = client.getTable("Book");
+  var favorsTable = client.getTable("Favors");
 
   /**
    * Process the results that are received by a call to table.read()
@@ -46,23 +45,22 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
-    bookTable
+    favorsTable
       .read()
       .then(success, failure)
   }, []);
   
   return (
     <View style={globalStyles.container}>
+      <Text> {navigation.getParam('email')} </Text>
       {isLoading ? <ActivityIndicator/> : (
           <FlatList
             data={favors}
-            keyExtractor={({ id }, index) => id}
+            keyExtractor={({ id }, index) => id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={ () => navigation.navigate('FavorDetails', item )}>
-                <Card>
-                  <Text style={globalStyles.titleText}>{ item.name }</Text>
-                </Card>
+                <Card item={ item } />
               </TouchableOpacity>
             )}
             />

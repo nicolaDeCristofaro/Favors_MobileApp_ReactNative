@@ -19,7 +19,7 @@ export default function Card(props) {
                 }}
                 />
                 <View style={{ padding: 10, width: '100%' }}>
-                    <Text style={styles.titlePost}>Title</Text>
+                    <Text style={styles.titlePost}> { props.item.title }</Text>
                     <View style={styles.keywordsArea}>
                       <Text style={styles.keyword}>
                           #keyword1
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   },
   keywordsArea: {
     flexDirection: 'row',
+    marginLeft: 5,
   },
   keyword: {
     color: 'white',
