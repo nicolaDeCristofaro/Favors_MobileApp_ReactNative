@@ -9,9 +9,36 @@ export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    paddingTop: 70,
+    paddingTop: 80,
     paddingBottom:0,
     backgroundColor: '#171F33',
+    alignItems: 'center',
+  },
+  inputView:{
+    width:"80%",
+    backgroundColor:"#465881",
+    borderRadius:25,
+    height:50,
+    marginBottom:20,
+    justifyContent:"center",
+    padding:20
+  },
+  inputText:{
+    height:50,
+    color:"#ff87d7",
+  },
+  customBtn:{
+    width:"80%",
+    backgroundColor:"#ff87d7",
+    borderRadius:25,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop:40,
+    marginBottom:10
+  },
+  customBtnText:{
+    color:"#171F33"
   },
 });
 

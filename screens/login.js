@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity,
+        TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { globalStyles } from '../styles/global'
+
 
 export default function Login({ navigation }) {
 
@@ -48,40 +51,41 @@ export default function Login({ navigation }) {
     }
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.logo}>Favors</Text>
-        <View style={styles.inputView} >
-          <TextInput  
-            style={styles.inputText}
-            placeholder="Email..." 
-            placeholderTextColor="#003f5c"
-            onChangeText={text => setEmail({email:text})}/>
+      <TouchableWithoutFeedback onPress={ Keyboard.dismiss}>
+        <View style={styles.containerLogin}>
+          <Text style={styles.logo}>Favors</Text>
+          <View style={globalStyles.inputView} >
+            <TextInput  
+              style={globalStyles.inputText}
+              placeholder="Email..." 
+              placeholderTextColor="#fff"
+              onChangeText={text => setEmail({email:text})}/>
+          </View>
+          <View style={globalStyles.inputView} >
+            <TextInput  
+              secureTextEntry
+              style={globalStyles.inputText}
+              placeholder="Password..." 
+              placeholderTextColor="#fff"
+              onChangeText={text => setPassword({password:text})}/>
+          </View>
+          <TouchableOpacity>
+            <Text style={styles.forgot}>Forgot Password?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={globalStyles.customBtn} onPress={pressLoginHandler}>
+            <Text style={globalStyles.customBtnText}>LOGIN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.signupText}>Signup</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.inputView} >
-          <TextInput  
-            secureTextEntry
-            style={styles.inputText}
-            placeholder="Password..." 
-            placeholderTextColor="#003f5c"
-            onChangeText={text => setPassword({password:text})}/>
-        </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.loginBtn} onPress={pressLoginHandler}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.signupText}>Signup</Text>
-        </TouchableOpacity>
-
-  
-      </View>
+      </TouchableWithoutFeedback>
+      
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerLogin: {
     flex: 1,
     backgroundColor: '#171F33',
     alignItems: 'center',
@@ -90,40 +94,14 @@ const styles = StyleSheet.create({
   logo:{
     fontWeight:"bold",
     fontSize:50,
-    color:"#e4d0e3",
+    color:"#ff87d7",
     marginBottom:40
   },
-  inputView:{
-    width:"80%",
-    backgroundColor:"#465881",
-    borderRadius:25,
-    height:50,
-    marginBottom:20,
-    justifyContent:"center",
-    padding:20
-  },
-  inputText:{
-    height:50,
-    color:"#e4d0e3"
-  },
   forgot:{
-    color:"#e4d0e3",
+    color:"white",
     fontSize:11
   },
-  loginBtn:{
-    width:"80%",
-    backgroundColor:"#e4d0e3",
-    borderRadius:25,
-    height:50,
-    alignItems:"center",
-    justifyContent:"center",
-    marginTop:40,
-    marginBottom:10
-  },
-  loginText:{
-    color:"#171F33"
-  },
   signupText:{
-    color:"#e4d0e3"
+    color:"white"
   }
 });

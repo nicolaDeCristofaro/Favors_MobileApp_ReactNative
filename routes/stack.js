@@ -9,7 +9,7 @@ import Login from '../screens/login';
 import Home from '../screens/home';
 import FavorDetails from '../screens/favorDetails';
 import Search from '../screens/search';
-import Add from '../screens/add';
+import FavorInsert from '../screens/favorInsert';
 import Account from '../screens/account';
 
 
@@ -24,7 +24,20 @@ const HomeDetailsScreens = {
 
 const HomeDetailsStack = createStackNavigator(HomeDetailsScreens, {
   defaultNavigationOptions:{
-    headerStyle: { backgroundColor: 'red'},
+    headerTransparent: true,
+    headerTitleAlign: 'center',
+    headerTintColor: 'white',
+  },
+});
+
+const InsertScreens = {
+  'Insert Favor Post': {
+    screen: FavorInsert
+  },
+};
+
+const InsertStack = createStackNavigator(InsertScreens, {
+  defaultNavigationOptions:{
     headerTransparent: true,
     headerTitleAlign: 'center',
     headerTintColor: 'white',
@@ -38,8 +51,8 @@ const TabScreens = {
   Search: {
     screen: Search,
   },
-  Add: {
-    screen: Add,
+  FavorInsert: {
+    screen: InsertStack,
   },
   Account: {
     screen: Account,
@@ -71,7 +84,7 @@ const TabNavigator = createBottomTabNavigator(TabScreens, {
         iconName = focused 
         ? 'ios-search' 
         : 'ios-search-outline';
-      } else if (routeName === 'Add') {
+      } else if (routeName === 'FavorInsert') {
         iconName = focused 
         ? 'ios-add' 
         : 'ios-add-outline';
