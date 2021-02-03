@@ -12,7 +12,6 @@ export const globalStyles = StyleSheet.create({
     paddingTop: 80,
     paddingBottom:0,
     backgroundColor: '#171F33',
-    alignItems: 'center',
   },
   inputView:{
     width:"80%",

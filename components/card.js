@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Card(props) {
   return (
-    <View style={styles.cardContainer}>
+    <View>
         <View style={styles.card}>
             <View style={styles.postOwner}>
                 <Ionicons name={'ios-person'} size={18} />
@@ -36,16 +36,14 @@ export default function Card(props) {
 }
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    flex: 1,
-  },
   card: {
     borderRadius: 15,
     elevation: 1,
     backgroundColor: '#e4d0e3',
     overflow: 'hidden',
-    marginHorizontal: 2,
+    marginHorizontal: 1,
     marginVertical: 6,
+    width: '100%',
   },
   cardContent: {
     marginVertical: 5,

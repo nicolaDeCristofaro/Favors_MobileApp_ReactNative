@@ -8,25 +8,50 @@ export default function FavorInsert() {
 
     const { ContentModeratorClient } = require("@azure/cognitiveservices-contentmoderator");
     const { CognitiveServicesCredentials } = require("@azure/ms-rest-azure-js");
-
+    var WindowsAzure = require('azure-mobile-apps-client');
+  
+    var azureMobileClient = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
     let contentModeratorKey = 'be1c58ed1a73426eb45cebb1f26e3f89';
     let contentModeratorEndpoint = 'https://favors-post-moderator.cognitiveservices.azure.com/';
 
     const cognitiveServiceCredentials = new CognitiveServicesCredentials(contentModeratorKey);
     const contentModeratorClient = new ContentModeratorClient(cognitiveServiceCredentials, contentModeratorEndpoint);
+    var favorsTable = azureMobileClient.getTable("Favors");
 
+    function success(insertedItem) {
+        var id = insertedItem.id;
+    }
+    
+    function failure(error) {
+        throw new Error('Error loading data: ', error);
+    }
+    
     return (
         <Formik
-          initialValues={{ 
+          initialValues={{
               title: '', 
               description: '', 
-              expense: '',
+              favor_expense: '',
               reward: '',
-              deadline: '' }}
+              application_deadline: ''}}
           onSubmit={(values) => {
-            console.log(values);
+              
+              values.id=3;
+              values.reward = parseFloat(values.reward);
+              values.favor_expense = parseFloat(values.favor_expense);
+              //TO DO: resolve datetime consistency between SQL and JS
+              /*values.creation_date=new Date().toString();
+              console.log(values.application_deadline);
+              console.log(new Date(Date.parse(values.application_deadline)));*/
+              values.id_user=2;
 
-            contentModeratorClient.textModeration
+            /*favorsTable
+                .insert(JSON.stringify(values))
+                .done( function(insertedItem) {
+                    var id = insertedItem.id;
+                }, failure);*/
+
+            /*contentModeratorClient.textModeration
                 .screenText("text/plain", "A Random fucking text")
                 .then( (result) => {
                     console.log("The result is: ");
@@ -35,12 +60,12 @@ export default function FavorInsert() {
                 .catch( (err) => {
                     console.log("An error occurred:");
                     console.error(err);
-                })
+                })*/
           }}
         >
           {formikProps => (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={{...globalStyles.container, ...styles.insertContainer}}>
+            <View style={globalStyles.container}>
                 <View style={{...globalStyles.inputView,...styles.insertPostView}}>
                     <TextInput
                     style={globalStyles.inputText}
@@ -66,8 +91,8 @@ export default function FavorInsert() {
                         style={globalStyles.inputText}
                         placeholder='Insert the expense needed...'
                         placeholderTextColor="#fff"
-                        onChangeText={formikProps.handleChange('expense')}
-                        value={formikProps.values.expense}
+                        onChangeText={formikProps.handleChange('favor_expense')}
+                        value={formikProps.values.favor_expense}
                         keyboardType='numeric'
                     />
                 </View>
@@ -86,8 +111,8 @@ export default function FavorInsert() {
                         style={globalStyles.inputText}
                         placeholder='Insert a dealine...'
                         placeholderTextColor="#fff"
-                        onChangeText={formikProps.handleChange('deadline')}
-                        value={formikProps.values.deadline}
+                        onChangeText={formikProps.handleChange('application_deadline')}
+                        value={formikProps.values.application_deadline}
                     />
                 </View>
                 <TouchableOpacity style={{...globalStyles.customBtn, ...styles.insertBtn}} onPress={formikProps.handleSubmit}>
@@ -102,9 +127,6 @@ export default function FavorInsert() {
   }
 
   const styles = StyleSheet.create({
-    insertContainer: {
-      alignItems: 'flex-start',
-    },
     insertPostView: {
         width:"100%",
     },
