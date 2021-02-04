@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View, TouchableOpacity,
     TouchableWithoutFeedback, Keyboard, Text } from 'react-native'
 import { globalStyles } from '../styles/global'
 import { Formik } from 'formik';
+import uuid from 'react-native-uuid';
 
 export default function FavorInsert() {
 
@@ -43,6 +44,7 @@ export default function FavorInsert() {
               /*values.creation_date=new Date().toString();
               console.log(values.application_deadline);
               console.log(new Date(Date.parse(values.application_deadline)));*/
+              console.log(uuid.v4());
               values.id_user=2;
 
             /*favorsTable

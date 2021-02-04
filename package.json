@@ -45,6 +45,7 @@
     "react-native-screens": "~2.15.2",
     "react-native-tcp": "^3.3.2",
     "react-native-udp": "^2.7.0",
+    "react-native-uuid": "^1.4.9",
     "react-native-vector-icons": "^8.0.0",
     "react-native-web": "~0.13.12",
     "react-native-webview": "^11.2.1",
@@ -60,6 +61,7 @@
     "tty-browserify": "0.0.0",
     "url": "^0.10.3",
     "util": "^0.10.4",
+    "uuid": "^8.3.2",
     "vm-browserify": "0.0.4"
   },
   "devDependencies": {

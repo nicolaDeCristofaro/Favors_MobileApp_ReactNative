@@ -52,7 +52,6 @@ export default function Home({ navigation }) {
   
   return (
     <View style={globalStyles.container}>
-      <Text> {navigation.getParam('email')} </Text>
       {isLoading ? <ActivityIndicator/> : (
           <FlatList
             data={favors}
@@ -60,7 +59,11 @@ export default function Home({ navigation }) {
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={ () => navigation.navigate('FavorDetails', item )}>
-                <Card item={ item } />
+                <Card 
+                  item={ item } 
+                  userFirstName={ navigation.getParam('first_name')}
+                  userLastName= {navigation.getParam('last_name')}
+                   />
               </TouchableOpacity>
             )}
             />

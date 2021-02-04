@@ -1,6 +1,5 @@
 import './shim';
 import 'react-native-get-random-values'
-//import stream from 'readable-stream/readable'
 import '@tradle/react-native-http'
 import React, { useState } from 'react';
 import * as Font from 'expo-font';

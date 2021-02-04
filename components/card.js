@@ -8,7 +8,9 @@ export default function Card(props) {
         <View style={styles.card}>
             <View style={styles.postOwner}>
                 <Ionicons name={'ios-person'} size={18} />
-                <Text style={{ paddingTop: 1, fontSize: 16, fontWeight: 'bold'}}> Max </Text>
+                <Text style={{ paddingTop: 1, fontSize: 16, fontWeight: 'bold'}}> 
+                  { props.userFirstName } { props.userLastName } 
+                </Text>
             </View>
             <View style={styles.cardContent}>
                 <Image
