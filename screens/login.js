@@ -3,6 +3,19 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity,
         TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../styles/global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
+const loginValidationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('*Please enter a valid email')
+    .required('*Email Address is required'),
+  password: yup
+    .string()
+    .min(4, ({ min }) => `*Password must be at least ${min} characters`)
+    .required('*Password is required'),
+})
 
 
 export default function Login({ navigation }) {
@@ -20,7 +33,6 @@ export default function Login({ navigation }) {
       }
     }
 
-
     var WindowsAzure = require('azure-mobile-apps-client');
 
     // Create a reference to the Azure App Service
@@ -37,61 +49,83 @@ export default function Login({ navigation }) {
     }
 
     useEffect(() => {
-      usersTable
+      client.login(
+        "twitter")
+      .done(function (results) {
+            alert("You are now signed in as: " + results.userId);
+      }, function (err) {
+            alert("Error: " + err);
+      });
+   
+      /*usersTable
         .read()
-        .then(success, failure)
+        .then(success, failure)*/
     }, []);
 
-    const pressLoginHandler = () =>  {
-      var numItemsRead = users.length;
-      var found = false;
-
-      for (var i = 0 ; i < numItemsRead ; i++) {
-          var user = users[i];
-          if (email.email === user.email && password.password === user.password){
-            storeData(user);
-            navigation.navigate('Home', user);
-            found = true;
-          }
-      }
-
-      if (!found){
-        alert('Email or Password do not match an existing user.')
-      }
-        
-    }
-
     return (
-      <TouchableWithoutFeedback onPress={ Keyboard.dismiss}>
-        <View style={styles.containerLogin}>
-          <Text style={styles.logo}>Favors</Text>
-          <View style={globalStyles.inputView} >
-            <TextInput  
-              style={globalStyles.inputText}
-              placeholder="Email..." 
-              placeholderTextColor="#fff"
-              onChangeText={text => setEmail({email:text})}/>
-          </View>
-          <View style={globalStyles.inputView} >
-            <TextInput  
-              secureTextEntry
-              style={globalStyles.inputText}
-              placeholder="Password..." 
-              placeholderTextColor="#fff"
-              onChangeText={text => setPassword({password:text})}/>
-          </View>
-          <TouchableOpacity>
-            <Text style={styles.forgot}>Forgot Password?</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={globalStyles.customBtn} onPress={pressLoginHandler}>
-            <Text style={globalStyles.customBtnText}>LOGIN</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.signupText}>Signup</Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableWithoutFeedback>
-      
+      <Formik
+          initialValues={{
+              email: '', 
+              password: ''}}
+          validationSchema={loginValidationSchema}
+          onSubmit={(values, actions) => {
+              actions.resetForm();
+
+              var numItemsRead = users.length;
+              var found = false;
+          
+              for (var i = 0 ; i < numItemsRead ; i++) {
+                  var user = users[i];
+                  if (values.email === user.email && values.password === user.password){
+                    storeData(user);
+                    navigation.navigate('Home', user);
+                    found = true;
+                  }
+              }
+          
+              if (!found){
+                alert('Email or Password do not match an existing user.')
+              }
+                  
+          }}
+        >
+          {formikProps => (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.containerLogin}>
+              <Text style={styles.logo}>Favors</Text>
+                <View style={{...globalStyles.inputView,...styles.insertPostView}}>
+                    <TextInput
+                    style={globalStyles.inputText}
+                    placeholder='Insert your email...'
+                    placeholderTextColor="#fff"
+                    onChangeText={formikProps.handleChange('email')}
+                    onBlur={formikProps.handleBlur('email')} 
+                    value={formikProps.values.email}
+                    />
+                </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.email && formikProps.errors.email}</Text>
+
+                <View style={{...globalStyles.inputView,...styles.insertPostView}}>
+                    <TextInput
+                      style={globalStyles.inputText}
+                      placeholder='Insert your password...'
+                      placeholderTextColor="#fff"
+                      onChangeText={formikProps.handleChange('password')}
+                      onBlur={formikProps.handleBlur('password')} 
+                      value={formikProps.values.password}
+                    />
+                </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.password && formikProps.errors.password}</Text>
+
+
+                <TouchableOpacity style={globalStyles.customBtn} onPress={formikProps.handleSubmit}>
+                    <Text style={globalStyles.customBtnText}>LOGIN</Text>
+                </TouchableOpacity>
+            </View>
+            </TouchableWithoutFeedback>
+
+          )}
+        </Formik>
     );
 }
 
