@@ -10,7 +10,6 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     padding: 15,
     paddingTop: '25%',
-    paddingBottom:0,
     backgroundColor: '#171F33',
   },
   inputView:{
@@ -18,7 +17,6 @@ export const globalStyles = StyleSheet.create({
     backgroundColor:"#465881",
     borderRadius:25,
     height:50,
-    marginBottom:20,
     justifyContent:"center",
     padding:20
   },
@@ -39,6 +37,12 @@ export const globalStyles = StyleSheet.create({
   customBtnText:{
     color:"#171F33"
   },
+  errorText: {
+    color: 'red',
+    fontWeight: 'bold',
+    margin: '1%',
+    marginLeft: '2%',
+  }
 });
 
 /*export const images = {

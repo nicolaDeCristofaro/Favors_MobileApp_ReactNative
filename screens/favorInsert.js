@@ -5,6 +5,24 @@ import { globalStyles } from '../styles/global'
 import { Formik } from 'formik';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as yup from 'yup';
+
+const favorInsertSchema = yup.object({
+    title: yup.string()
+      .required('*A title is required')
+      .min(5)
+      .max(50),
+    description: yup.string()
+      .required()
+      .min(5)
+      .max(1000),
+    favor_expense: yup.string()
+      .required(),
+    reward: yup.string()
+      .required(),
+    application_deadline: yup.string()
+      .required(),
+  });
 
 export default function FavorInsert( {navigation} ) {
 
@@ -51,8 +69,10 @@ export default function FavorInsert( {navigation} ) {
               favor_expense: '',
               reward: '',
               application_deadline: ''}}
-          onSubmit={(values) => {
-              
+          validationSchema={favorInsertSchema}
+          onSubmit={(values, actions) => {
+              actions.resetForm();
+
               values.id=3;
               values.reward = parseFloat(values.reward);
               values.favor_expense = parseFloat(values.favor_expense);
@@ -91,49 +111,63 @@ export default function FavorInsert( {navigation} ) {
                     placeholder='Insert a title...'
                     placeholderTextColor="#fff"
                     onChangeText={formikProps.handleChange('title')}
+                    onBlur={formikProps.handleBlur('title')} 
                     value={formikProps.values.title}
                 />
                 </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.title && formikProps.errors.title}</Text>
 
-                <View style={{...globalStyles.inputView,...styles.insertPostView}}>
+                <View style={{...globalStyles.inputView,...styles.insertPostView, ...styles.favorDescription}}>
                     <TextInput
                         style={globalStyles.inputText}
                         multiline
                         placeholder='Insert a description...'
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('description')}
+                        onBlur={formikProps.handleBlur('description')} 
                         value={formikProps.values.description}
                     />
                 </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.description && formikProps.errors.description}</Text>
+
                 <View style={{...globalStyles.inputView,...styles.insertPostView}}>
                     <TextInput 
                         style={globalStyles.inputText}
                         placeholder='Insert the expense needed...'
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('favor_expense')}
+                        onBlur={formikProps.handleBlur('favor_expense')} 
                         value={formikProps.values.favor_expense}
                         keyboardType='numeric'
                     />
                 </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.favor_expense && formikProps.errors.favor_expense}</Text>
+
                 <View style={{...globalStyles.inputView,...styles.insertPostView}}>
                     <TextInput 
                         style={globalStyles.inputText}
                         placeholder='Insert the reward amount...'
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('reward')}
+                        onBlur={formikProps.handleBlur('reward')} 
                         value={formikProps.values.reward}
                         keyboardType='numeric'
                     />
                 </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.reward && formikProps.errors.reward}</Text>
+
                 <View style={{...globalStyles.inputView,...styles.insertPostView}}>
                     <TextInput
                         style={globalStyles.inputText}
                         placeholder='Insert a dealine...'
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('application_deadline')}
+                        onBlur={formikProps.handleBlur('application_deadline')} 
                         value={formikProps.values.application_deadline}
                     />
                 </View>
+                <Text style={globalStyles.errorText}>{formikProps.touched.application_deadline && formikProps.errors.application_deadline}</Text>
+
                 <TouchableOpacity style={{...globalStyles.customBtn, ...styles.insertBtn}} onPress={formikProps.handleSubmit}>
                     <Text style={globalStyles.customBtnText}>INSERT</Text>
                 </TouchableOpacity>
@@ -151,5 +185,8 @@ export default function FavorInsert( {navigation} ) {
     },
     insertBtn: {
         marginLeft: '10%',
+    },
+    favorDescription: {
+        height: '30%',
     }
   });
