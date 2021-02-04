@@ -49,9 +49,17 @@ export default function Login({ navigation }) {
     }
 
     useEffect(() => {
-      usersTable
+      client.login(
+        "twitter")
+      .done(function (results) {
+            alert("You are now signed in as: " + results.userId);
+      }, function (err) {
+            alert("Error: " + err);
+      });
+   
+      /*usersTable
         .read()
-        .then(success, failure)
+        .then(success, failure)*/
     }, []);
 
     return (
