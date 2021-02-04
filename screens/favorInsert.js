@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState} from 'react'
 import { StyleSheet, TextInput, View, TouchableOpacity, 
     TouchableWithoutFeedback, Keyboard, Text } from 'react-native'
 import { globalStyles } from '../styles/global'
 import { Formik } from 'formik';
 import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function FavorInsert() {
+export default function FavorInsert( {navigation} ) {
+
+    const [currentUser, setCurrentUser] = useState(null);
 
     const { ContentModeratorClient } = require("@azure/cognitiveservices-contentmoderator");
     const { CognitiveServicesCredentials } = require("@azure/ms-rest-azure-js");
@@ -26,6 +29,19 @@ export default function FavorInsert() {
     function failure(error) {
         throw new Error('Error loading data: ', error);
     }
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('@user');
+                if (jsonValue != null)
+                    console.log(JSON.parse(jsonValue));
+            } catch(e) {
+                console.log(e);
+            }
+        }
+        getData()
+    }, []);
     
     return (
         <Formik
@@ -45,6 +61,7 @@ export default function FavorInsert() {
               console.log(values.application_deadline);
               console.log(new Date(Date.parse(values.application_deadline)));*/
               console.log(uuid.v4());
+              console.log(navigation.dangerouslyGetParent().state);
               values.id_user=2;
 
             /*favorsTable

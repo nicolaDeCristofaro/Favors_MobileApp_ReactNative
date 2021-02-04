@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity,
         TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { globalStyles } from '../styles/global'
+import { globalStyles } from '../styles/global';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Login({ navigation }) {
@@ -9,6 +10,15 @@ export default function Login({ navigation }) {
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [users, setUsers] = useState(null);
+
+    const storeData = async (value) => {
+      try {
+        const jsonValue = JSON.stringify(value)
+        await AsyncStorage.setItem('@user', jsonValue)
+      } catch (e) {
+        console.log(e);
+      }
+    }
 
 
     var WindowsAzure = require('azure-mobile-apps-client');
@@ -39,6 +49,7 @@ export default function Login({ navigation }) {
       for (var i = 0 ; i < numItemsRead ; i++) {
           var user = users[i];
           if (email.email === user.email && password.password === user.password){
+            storeData(user);
             navigation.navigate('Home', user);
             found = true;
           }
