@@ -20,10 +20,10 @@ const loginValidationSchema = yup.object().shape({
 
 export default function Login({ navigation }) {
 
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
+    //State
     const [users, setUsers] = useState(null);
 
+    //Store the user logged in with AsyncStorage
     const storeData = async (value) => {
       try {
         const jsonValue = JSON.stringify(value)
@@ -33,25 +33,69 @@ export default function Login({ navigation }) {
       }
     }
 
+    //Azure Client services
     var WindowsAzure = require('azure-mobile-apps-client');
-
-    // Create a reference to the Azure App Service
     var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
-
     var usersTable = client.getTable("Users");
 
-    function success(results) {
-      setUsers(results);
-    }
 
-    function failure(error) {
-      throw new Error('Error loading data: ', error);
-    }
+    /*const azureFunc = () => {
+      const functionUrl = "https://keywordsgenerator-function.azurewebsites.net/api/keywordsGenerator?code=6X9l2mSP/6ifVvtnp4u0gMXg9gbWSzwmqjm3hSQT3JGnHg6U1LNtmA=="
+      fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: 'Nico',
+        }),   
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    };
+
+    /*async function sendEventFunc() {
+
+        var text = '[' +
+        '{ "id":"1807" , "eventType":"recordInserted" ,  "subject": "myapp/vehicles/motorcycles"' +
+        ' , "eventTime": "2017-08-10T21:03:07+00:00", ' +
+        '"data": { "make": "Ducati", "model": "Monster" } , "dataVersion": "1.0" }]';
+
+
+      const functionUrl = "https://favors-topic.northeurope-1.eventgrid.azure.net/api/events"
+      fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'aeg-sas-key': 'SBdgyfrRfpElqw44831exb80llfzrjrkL3w9j+eA82Q='
+        },
+        body: text,  
+      })
+      .then((response) => response.status)
+      .then((status) => {
+        console.log(status);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }*/
 
     useEffect(() => {
+      //sendEventFunc();
       usersTable
         .read()
-        .then(success, failure)
+        .then(function (results) {
+          setUsers(results);
+        }, function (error) {
+          console.error(error);
+        })
     }, []);
 
     return (
@@ -64,17 +108,21 @@ export default function Login({ navigation }) {
               actions.resetForm();
 
               var numItemsRead = users.length;
-              var found = false;
+              if ( numItemsRead > 0){
+                var found = false;
           
-              for (var i = 0 ; i < numItemsRead ; i++) {
-                  var user = users[i];
-                  if (values.email === user.email && values.password === user.password){
-                    storeData(user);
-                    navigation.navigate('Home', user);
-                    found = true;
-                  }
+                for (var i = 0 ; i < numItemsRead ; i++) {
+                    var user = users[i];
+                    if (values.email === user.email && values.password === user.password){
+                      storeData(user);
+                      navigation.navigate('Home', user);
+                      found = true;
+                    }
+                }
+              }else{
+                alert("There are no users stored in the DB");
               }
-          
+              
               if (!found){
                 alert('Email or Password do not match an existing user.')
               }

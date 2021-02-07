@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react'
-import { StyleSheet, TextInput, View, TouchableOpacity, 
-    TouchableWithoutFeedback, Keyboard, Text } from 'react-native'
+import { Alert, StyleSheet, TextInput, View, TouchableOpacity, 
+    TouchableWithoutFeedback, Keyboard, Text, ActionSheetIOS } from 'react-native'
 import { globalStyles } from '../styles/global'
 import { Formik } from 'formik';
 import uuid from 'react-native-uuid';
@@ -9,25 +9,32 @@ import * as yup from 'yup';
 
 const favorInsertSchema = yup.object({
     title: yup.string()
-      .required('*A title is required')
-      .min(5)
-      .max(50),
+      .required('*The title field is required')
+      .min(5, ({ min }) => `*Title must be at least ${min} characters`)
+      .max(50, ({ max }) => `*Title must be at max ${max} characters`),
     description: yup.string()
-      .required()
-      .min(5)
-      .max(1000),
+        .required('*The description field is required')
+        .min(5, ({ min }) => `*Description must be at least ${min} characters`)
+        .max(1000, ({ max }) => `*Description must be at max ${max} characters`),
     favor_expense: yup.string()
-      .required(),
+        .required('*The favor_expense fiels is required'),
     reward: yup.string()
-      .required(),
+        .required('*The reward fiels is required'),
     application_deadline: yup.string()
-      .required(),
-  });
+        .required('*The application_deadline fiels is required'),
+});
 
 export default function FavorInsert( {navigation} ) {
 
+    //State
     const [currentUser, setCurrentUser] = useState(null);
+    const [titleDirty, setTitleDirty] = useState(false);
+    const [descDirty, setDescDirty] = useState(false);
+    const [favorToInsert, setFavorToInsert] = useState(null);
+    const [formActions, setFormActions] = useState(null);
 
+
+    //Azure Client Services
     const { ContentModeratorClient } = require("@azure/cognitiveservices-contentmoderator");
     const { CognitiveServicesCredentials } = require("@azure/ms-rest-azure-js");
     var WindowsAzure = require('azure-mobile-apps-client');
@@ -40,26 +47,88 @@ export default function FavorInsert( {navigation} ) {
     const contentModeratorClient = new ContentModeratorClient(cognitiveServiceCredentials, contentModeratorEndpoint);
     var favorsTable = azureMobileClient.getTable("Favors");
 
-    function success(insertedItem) {
-        var id = insertedItem.id;
-    }
-    
-    function failure(error) {
-        throw new Error('Error loading data: ', error);
-    }
-
+    //Get the user logged ind from AsyncStorage
     useEffect(() => {
         const getData = async () => {
             try {
                 const jsonValue = await AsyncStorage.getItem('@user');
-                if (jsonValue != null)
-                    console.log(JSON.parse(jsonValue));
+                if (jsonValue != null) setCurrentUser(JSON.parse(jsonValue));
             } catch(e) {
                 console.log(e);
             }
         }
         getData()
     }, []);
+
+    function contentModeration (text){
+        try {
+            return contentModeratorClient.textModeration
+                .screenText("text/plain", text);
+          } catch (error) {
+            console.error(error);
+          }
+    }
+
+    useEffect(() => {
+        
+        if((!descDirty) && (!titleDirty) && (favorToInsert != null)){
+            //Title and Desc are clean, so you can procede to posting
+            favorsTable
+                .insert(JSON.stringify(favorToInsert))
+                .done( function(insertedItem) {
+
+                    //Inform the user the post is inserted
+                    Alert.alert(
+                        "POST INSERTED",
+                        "The favor post is inserted successfully.",
+                        [{
+                            text: 'OK',
+                            onPress: () => {
+                                setTitleDirty(false);
+                                setDescDirty(false);
+                                setFavorToInsert(null);
+                                formActions.resetForm();
+                                navigation.navigate("Home", insertedItem);
+                            }
+                        }]);
+                }, function(error) {
+                    console.error('Error loading data: ', error);
+                });
+        }
+
+        //Inform the user that something is wrong
+        if(titleDirty && descDirty){
+            Alert.alert(
+                "BAD TITLE AND DESCRIPTION",
+                "The favor title and description contain inappropriate words, try to be kinder.",
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        console.log("Bad Title and desc");
+                    }
+                }]);
+        }else if(titleDirty){
+            Alert.alert(
+                "BAD TITLE",
+                "The favor title contains inappropriate words, try to be kinder.",
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        console.log("Bad Title");
+                    }
+                }]);
+        }else if(descDirty){
+            Alert.alert(
+                "BAD DESCRIPTION",
+                "The favor description contains inappropriate words, try to be kinder.",
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        console.log("Bad desc")
+                    }
+                }]);
+        }
+    }, [titleDirty, descDirty, favorToInsert]);
     
     return (
         <Formik
@@ -70,36 +139,36 @@ export default function FavorInsert( {navigation} ) {
               reward: '',
               application_deadline: ''}}
           validationSchema={favorInsertSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
           onSubmit={(values, actions) => {
-              actions.resetForm();
 
-              values.id=3;
-              values.reward = parseFloat(values.reward);
-              values.favor_expense = parseFloat(values.favor_expense);
-              //TO DO: resolve datetime consistency between SQL and JS
-              /*values.creation_date=new Date().toString();
-              console.log(values.application_deadline);
-              console.log(new Date(Date.parse(values.application_deadline)));*/
-              console.log(uuid.v4());
-              console.log(navigation.dangerouslyGetParent().state);
-              values.id_user=2;
+            setFormActions(actions);
 
-            /*favorsTable
-                .insert(JSON.stringify(values))
-                .done( function(insertedItem) {
-                    var id = insertedItem.id;
-                }, failure);*/
+            function moderate(){
+                return Promise.all([contentModeration(values.title), contentModeration(values.description)])
+              }
 
-            /*contentModeratorClient.textModeration
-                .screenText("text/plain", "A Random fucking text")
-                .then( (result) => {
-                    console.log("The result is: ");
-                    console.log(result);
+            //Analyze title and description with Azure Content Moderator Service
+            moderate()
+                .then(([responseTitle, responseDescription]) => {
+                    //Both the response are available
+
+                    if( responseTitle != null && responseTitle.terms != null && responseTitle.terms.length > 0) setTitleDirty(true);
+                    else setTitleDirty(false);
+                    if( responseDescription != null && responseDescription.terms != null && responseDescription.terms.length > 0) setDescDirty(true);
+                    else setDescDirty(false);
+
+                    //Refine info to add the post
+                    values.id=uuid.v4();
+                    values.favor_expense = parseFloat(values.favor_expense);
+                    values.reward = parseFloat(values.reward);
+                    values.creation_date= new Date();
+                    values.application_deadline=new Date(values.application_deadline);
+                    values.id_user=currentUser.id;
+
+                    setFavorToInsert(values);
                 })
-                .catch( (err) => {
-                    console.log("An error occurred:");
-                    console.error(err);
-                })*/
           }}
         >
           {formikProps => (
@@ -137,7 +206,7 @@ export default function FavorInsert( {navigation} ) {
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('favor_expense')}
                         onBlur={formikProps.handleBlur('favor_expense')} 
-                        value={formikProps.values.favor_expense}
+                        value={formikProps.values.favor_expense.toString()}
                         keyboardType='numeric'
                     />
                 </View>
@@ -150,7 +219,7 @@ export default function FavorInsert( {navigation} ) {
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('reward')}
                         onBlur={formikProps.handleBlur('reward')} 
-                        value={formikProps.values.reward}
+                        value={formikProps.values.reward.toString()}
                         keyboardType='numeric'
                     />
                 </View>
@@ -163,7 +232,7 @@ export default function FavorInsert( {navigation} ) {
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('application_deadline')}
                         onBlur={formikProps.handleBlur('application_deadline')} 
-                        value={formikProps.values.application_deadline}
+                        value={formikProps.values.application_deadline.toString()}
                     />
                 </View>
                 <Text style={globalStyles.errorText}>{formikProps.touched.application_deadline && formikProps.errors.application_deadline}</Text>
@@ -187,6 +256,6 @@ export default function FavorInsert( {navigation} ) {
         marginLeft: '10%',
     },
     favorDescription: {
-        height: '30%',
+        height: '25%',
     }
   });

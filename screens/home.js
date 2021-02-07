@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
 import { globalStyles } from '../styles/global'
 import Card from '../components/card';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Home({ navigation }) {
-
+  
+  //State
   const [favors, setFavors] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
@@ -23,17 +26,8 @@ export default function Home({ navigation }) {
    * @param {Object} results[] the individual results
    */
   function success(results) {
-    //var numItemsRead = results.length;
-    /*console.log(numItemsRead);
-
-    for (var i = 0 ; i < numItemsRead ; i++) {
-        var row = results[i];
-        //console.log(row);
-        setFavors( favors => [...favors, row]);
-    }*/
     setFavors(results);
     setLoading(false);
-    //console.log(favors);
   }
 
   function failure(error) {
@@ -44,11 +38,16 @@ export default function Home({ navigation }) {
     navigation.navigate('FavorDetails');
   }
 
-  useEffect(() => {
+  const fetchFavors = async () => {
     favorsTable
-      .read()
-      .then(success, failure)
-  }, []);
+    .read()
+    .then(success, failure)
+  }
+
+  useEffect(() => {
+    fetchFavors(favors)
+  }, [favors]);
+
   
   return (
     <View style={globalStyles.container}>

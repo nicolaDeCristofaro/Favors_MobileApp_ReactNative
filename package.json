@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@azure/cognitiveservices-contentmoderator": "^5.0.1",
+    "@azure/eventgrid": "^2.0.0",
     "@azure/ms-rest-azure-js": "^2.1.0",
     "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "0.1.10",
