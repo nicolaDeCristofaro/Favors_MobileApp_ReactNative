@@ -1,8 +1,47 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Image, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Card(props) {
+  const [favorsKeywords, setFavorsKeywords] = useState([]);
+  const [myKeywords, setMyKeywords] = useState([]);
+
+
+
+  var WindowsAzure = require('azure-mobile-apps-client');
+  var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
+  var favorsKeywordsTable = client.getTable("Favors_Keywords");
+
+  function successFavorsKeywords(results) {
+    setFavorsKeywords(results);
+  }
+
+  function failure(error) {
+    throw new Error('Error loading data: ', error);
+  }
+
+  const fetchFavorsKeywords = async () => {
+    favorsKeywordsTable
+    .where({ idFavor: props.item.id})
+    .read()
+    .then(successFavorsKeywords, failure)
+  }
+
+  useEffect(() => {
+    fetchFavorsKeywords()
+
+    var myKeywords = [];
+
+    for(var keyword of favorsKeywords){
+      for(var k of props.keywords){
+        if( keyword.idKeyword == k.id) myKeywords.push(k.name);
+      }
+    }
+
+    setMyKeywords(myKeywords);
+
+  }, []);
+
   return (
     <View>
         <View style={styles.card}>
@@ -23,12 +62,9 @@ export default function Card(props) {
                 <View style={{ padding: 10, width: '100%' }}>
                     <Text style={styles.titlePost}> { props.item.title }</Text>
                     <View style={styles.keywordsArea}>
-                      <Text style={styles.keyword}>
-                          #keyword1
-                      </Text>
-                      <Text style={styles.keyword}>
-                          #keyword1
-                      </Text>
+                      {myKeywords.map((value, index) => {
+                         return <Text key={index} style={styles.keyword}> #{value} </Text>
+                      })}
                     </View>
                 </View>
             </View>
@@ -63,12 +99,14 @@ const styles = StyleSheet.create({
   },
   keywordsArea: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginLeft: 5,
   },
   keyword: {
     color: 'white',
     fontWeight: 'bold',
     backgroundColor: 'violet',
+    marginTop:1,
     marginRight: 5,
     padding: 1,
     borderRadius: 5,

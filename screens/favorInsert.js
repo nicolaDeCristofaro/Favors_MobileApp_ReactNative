@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react'
 import { Alert, StyleSheet, TextInput, View, TouchableOpacity, 
-    TouchableWithoutFeedback, Keyboard, Text, ActionSheetIOS } from 'react-native'
+    TouchableWithoutFeedback, Keyboard, Text, ActivityIndicator } from 'react-native'
 import { globalStyles } from '../styles/global'
 import { Formik } from 'formik';
 import uuid from 'react-native-uuid';
@@ -69,14 +69,42 @@ export default function FavorInsert( {navigation} ) {
           }
     }
 
+    async function sendKeywordsGeneratorEvent(idFavor, titleFavor, descFavor) {
+
+        var event = '[' +
+        '{ "id":"'+Math.floor(Math.random()*100000)+'" , "eventType":"favorInserted" ,  "subject": "favorsMobileApp"' +
+        ' , "eventTime": "'+new Date().toUTCString()+'", ' +
+        '"data": { "idFavor": "'+idFavor+'", "titleFavor": "'+titleFavor+'", "descFavor": "'+descFavor+'" } , "dataVersion": "1.0" }]';
+
+        //console.log(event);
+
+
+        const topicURL = "https://favors-topic.northeurope-1.eventgrid.azure.net/api/events"
+        fetch(topicURL, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'aeg-sas-key': 'FiLyHEUOu0vPvtxY98vtf0SCVYyPmnY1eFCdrJulQGk='
+            },
+            body: event,  
+        })
+        .then((response) => response.status)
+        .then((status) => {
+            console.log(status);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    }
+
     useEffect(() => {
         
         if((!descDirty) && (!titleDirty) && (favorToInsert != null)){
             //Title and Desc are clean, so you can procede to posting
             favorsTable
-                .insert(JSON.stringify(favorToInsert))
+                .insert(favorToInsert)
                 .done( function(insertedItem) {
-
                     //Inform the user the post is inserted
                     Alert.alert(
                         "POST INSERTED",
@@ -84,30 +112,19 @@ export default function FavorInsert( {navigation} ) {
                         [{
                             text: 'OK',
                             onPress: () => {
-                                setTitleDirty(false);
-                                setDescDirty(false);
-                                setFavorToInsert(null);
                                 formActions.resetForm();
-                                navigation.navigate("Home", insertedItem);
+                                setFavorToInsert(null);
+                                sendKeywordsGeneratorEvent(insertedItem.id, insertedItem.title, insertedItem.description);
+                                navigation.navigate("Home");
                             }
                         }]);
-                }, function(error) {
+                }, function (error) {
                     console.error('Error loading data: ', error);
                 });
         }
 
         //Inform the user that something is wrong
-        if(titleDirty && descDirty){
-            Alert.alert(
-                "BAD TITLE AND DESCRIPTION",
-                "The favor title and description contain inappropriate words, try to be kinder.",
-                [{
-                    text: 'OK',
-                    onPress: () => {
-                        console.log("Bad Title and desc");
-                    }
-                }]);
-        }else if(titleDirty){
+        if(titleDirty){
             Alert.alert(
                 "BAD TITLE",
                 "The favor title contains inappropriate words, try to be kinder.",
@@ -139,8 +156,7 @@ export default function FavorInsert( {navigation} ) {
               reward: '',
               application_deadline: ''}}
           validationSchema={favorInsertSchema}
-          validateOnBlur={false}
-          validateOnChange={false}
+          validateOnBlur={true}
           onSubmit={(values, actions) => {
 
             setFormActions(actions);
@@ -167,7 +183,7 @@ export default function FavorInsert( {navigation} ) {
                     values.application_deadline=new Date(values.application_deadline);
                     values.id_user=currentUser.id;
 
-                    setFavorToInsert(values);
+                    setFavorToInsert(JSON.stringify(values));
                 })
           }}
         >
@@ -242,9 +258,9 @@ export default function FavorInsert( {navigation} ) {
                 </TouchableOpacity>
             </View>
             </TouchableWithoutFeedback>
-
           )}
         </Formik>
+
     );
   }
 
@@ -257,5 +273,14 @@ export default function FavorInsert( {navigation} ) {
     },
     favorDescription: {
         height: '25%',
-    }
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
   });

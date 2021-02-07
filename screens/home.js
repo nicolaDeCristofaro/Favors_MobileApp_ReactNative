@@ -9,6 +9,7 @@ export default function Home({ navigation }) {
   
   //State
   const [favors, setFavors] = useState([]);
+  const [keywords, setKeywords] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
   var WindowsAzure = require('azure-mobile-apps-client');
@@ -17,16 +18,14 @@ export default function Home({ navigation }) {
   var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
 
   var favorsTable = client.getTable("Favors");
+  var keywordsTable = client.getTable("Keywords");
 
-  /**
-   * Process the results that are received by a call to table.read()
-   *
-   * @param {Object} results the results as a pseudo-array
-   * @param {int} results.length the length of the results array
-   * @param {Object} results[] the individual results
-   */
-  function success(results) {
+  function successFavors(results) {
     setFavors(results);
+  }
+
+  function successKeywords(results) {
+    setKeywords(results);
     setLoading(false);
   }
 
@@ -34,24 +33,27 @@ export default function Home({ navigation }) {
     throw new Error('Error loading data: ', error);
   }
 
-  const pressHandler = () => {
-    navigation.navigate('FavorDetails');
-  }
-
   const fetchFavors = async () => {
     favorsTable
     .read()
-    .then(success, failure)
+    .then(successFavors, failure)
+  }
+
+  const fetchKeywords = async () => {
+    keywordsTable
+    .read()
+    .then(successKeywords, failure)
   }
 
   useEffect(() => {
     fetchFavors(favors)
-  }, [favors]);
+    fetchKeywords(keywords)
+  }, [favors, keywords]);
 
   
   return (
     <View style={globalStyles.container}>
-      {isLoading ? <ActivityIndicator/> : (
+      {isLoading ? <ActivityIndicator size='large' /> : (
           <FlatList
             data={favors}
             keyExtractor={({ id }, index) => id.toString()}
@@ -62,6 +64,7 @@ export default function Home({ navigation }) {
                   item={ item } 
                   userFirstName={ navigation.getParam('first_name')}
                   userLastName= {navigation.getParam('last_name')}
+                  keywords= { keywords }
                    />
               </TouchableOpacity>
             )}
