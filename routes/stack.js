@@ -11,6 +11,8 @@ import FavorDetails from '../screens/favorDetails';
 import Search from '../screens/search';
 import FavorInsert from '../screens/favorInsert';
 import Account from '../screens/account';
+import FavorsPublished from '../screens/favorsPublished';
+import FavorCandidates from '../screens/favorCandidates';
 
 
 const HomeDetailsScreens = {
@@ -44,6 +46,27 @@ const InsertStack = createStackNavigator(InsertScreens, {
   },
 });
 
+
+const AccountScreens = {
+  'My Account': {
+    screen: Account
+  },
+  'Favors Published': {
+    screen: FavorsPublished
+  },
+  'Favor Candidates': {
+    screen: FavorCandidates
+  },
+};
+
+const AccountStack = createStackNavigator(AccountScreens, {
+  defaultNavigationOptions:{
+    headerTransparent: true,
+    headerTitleAlign: 'center',
+    headerTintColor: 'white',
+  },
+});
+
 const TabScreens = {
   Home: {
     screen: HomeDetailsStack,
@@ -55,7 +78,7 @@ const TabScreens = {
     screen: InsertStack,
   },
   Account: {
-    screen: Account,
+    screen: AccountStack,
   },
 };
 

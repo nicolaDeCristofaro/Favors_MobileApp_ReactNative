@@ -60,6 +60,16 @@ export default function FavorInsert( {navigation} ) {
         getData()
     }, []);
 
+    //Store the variable used to update the home with favors in AsyncStorage
+    const storeData = (value) => {
+        try {
+            const jsonValue = JSON.stringify(value)
+            AsyncStorage.setItem('@toUpdate', jsonValue)
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     function contentModeration (text){
         try {
             return contentModeratorClient.textModeration
@@ -114,6 +124,7 @@ export default function FavorInsert( {navigation} ) {
                             onPress: () => {
                                 formActions.resetForm();
                                 setFavorToInsert(null);
+                                storeData(JSON.stringify(true));
                                 sendKeywordsGeneratorEvent(insertedItem.id, insertedItem.title, insertedItem.description);
                                 navigation.navigate("Home");
                             }
