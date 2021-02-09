@@ -49,38 +49,18 @@ export default function Home({ navigation }) {
   useEffect(() => {
     fetchFavors()
     fetchKeywords()
-    
   }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
 
-    const toBeUpdated = async () => {
-      try {
-          const jsonValue = await AsyncStorage.getItem('@toUpdate');
-          await AsyncStorage.setItem('@toUpdate', JSON.stringify(false));
-          return JSON.parse(jsonValue);
-      } catch(e) {
-          console.log(e);
-      }
-    }
-    var toReload = await toBeUpdated()
-
-    console.log(toReload);
-    if (toReload) {
-      //It is inserted a new favor so on refresh you should call again fetch from DB
-      try {
+   try {
         fetchFavors();
         fetchKeywords();
         setRefreshing(false)
       } catch (error) {
         console.error(error);
       }
-    }
-    else{
-      alert('No more new data available');
-      setRefreshing(false);
-    }
   }, [refreshing]);
 
   
@@ -94,6 +74,7 @@ export default function Home({ navigation }) {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             renderItem={({ item }) => (
               <Card 
+                idUserLoggedIn={navigation.getParam('id')}
                 item={ item } 
                 keywords= { keywords }
                 navigation={ navigation }

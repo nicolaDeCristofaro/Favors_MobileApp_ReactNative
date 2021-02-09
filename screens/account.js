@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Account({ navigation }) {
 
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState([]);
 
       useEffect(() => {
         const getData = async () => {
@@ -34,7 +34,6 @@ export default function Account({ navigation }) {
     }, [currentUser]);
 
   const favorsPublishedHandler = () => {
-    console.log(navigation);
     navigation.navigate('Favors Published', currentUser);
   }
 
@@ -46,8 +45,7 @@ export default function Account({ navigation }) {
               <View style={styles.headerColumn}>
               <Image
                   style={styles.userImage}
-                  source={require('../assets/profile/batman.png')
-                  }
+                  source={{uri:currentUser.thumbnail_uri}}
                 />
                 <Text style={styles.userNameText}> {currentUser.first_name} {currentUser.last_name}</Text>
                 <View style={styles.userAddressRow}>

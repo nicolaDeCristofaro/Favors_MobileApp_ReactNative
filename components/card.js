@@ -59,7 +59,7 @@ export default function Card(props) {
   }, [favorsKeywords]);
 
   return (
-    <TouchableOpacity onPress={ () => props.navigation.navigate('FavorDetails', props.item, {...myKeywords} )}>
+    <TouchableOpacity onPress={ () => props.navigation.navigate('FavorDetails', {...myKeywords, favorSelected: props.item, idUserLoggedIn: props.idUserLoggedIn} )}>
         <View style={styles.card}>
             <View style={styles.postOwner}>
                 <Ionicons name={'ios-person'} size={20} />

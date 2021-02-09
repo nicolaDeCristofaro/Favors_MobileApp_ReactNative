@@ -21,7 +21,7 @@ const loginValidationSchema = yup.object().shape({
 export default function Login({ navigation }) {
 
     //State
-    const [users, setUsers] = useState(null);
+    const [users, setUsers] = useState([]);
 
     //Store the user logged in with AsyncStorage
     const storeData = async (value) => {
@@ -55,7 +55,6 @@ export default function Login({ navigation }) {
               password: ''}}
           validationSchema={loginValidationSchema}
           onSubmit={(values, actions) => {
-              actions.resetForm();
 
               var numItemsRead = users.length;
               if ( numItemsRead > 0){
@@ -65,6 +64,7 @@ export default function Login({ navigation }) {
                     var user = users[i];
                     if (values.email === user.email && values.password === user.password){
                       storeData(user);
+                      actions.resetForm();
                       navigation.navigate('Home', user);
                       found = true;
                     }

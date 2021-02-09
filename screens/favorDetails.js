@@ -23,7 +23,7 @@ export default function FavorDetails({ navigation }) {
 
     const fetchFavorsCandidates = () => {
       favorsCandidatesTable
-      .where({ idUser: navigation.getParam('id_user'), idFavor: navigation.getParam('id')})
+      .where({ idUser: navigation.getParam('idUserLoggedIn'), idFavor: navigation.getParam('favorSelected').id})
       .read()
       .then(successFavorsCandidates, failure)
     }
@@ -36,7 +36,7 @@ export default function FavorDetails({ navigation }) {
       //Insert entry in DB table Favors_Candidates
 
       //Create the object to insert
-      const fav_cand = {id: uuid.v4(), idUser: navigation.getParam('id_user'),idFavor: navigation.getParam('id')}
+      const fav_cand = {id: uuid.v4(), idUser: navigation.getParam('idUserLoggedIn'),idFavor: navigation.getParam('favorSelected').id}
       favorsCandidatesTable
                 .insert(JSON.stringify(fav_cand))
                 .done( function(insertedItem) {
@@ -57,16 +57,16 @@ export default function FavorDetails({ navigation }) {
 
     return (
     <View style={globalStyles.container}>
-        <Text style={styles.titlePostDetails}> {navigation.getParam('title')} </Text>
-        <Text style={styles.descPostDetails}> {navigation.getParam('description')} </Text>
+        <Text style={styles.titlePostDetails}> {navigation.getParam('favorSelected').title} </Text>
+        <Text style={styles.descPostDetails}> {navigation.getParam('favorSelected').description} </Text>
         <View style={styles.otherInfoArea}>
             <View style={ {...styles.infoSubArea, ...styles.subAreaReward}}>
               <Text style={styles.rewardLabel}> Reward</Text>
-              <Text style={styles.reward}> {navigation.getParam('reward')} €</Text>
+              <Text style={styles.reward}> {navigation.getParam('favorSelected').reward} €</Text>
             </View>
             <View style={{...styles.infoSubArea,...styles.subAreaExpense}}>
               <Text style={styles.expenseLabel}>Expense</Text>
-              <Text style={styles.expense}>{navigation.getParam('favor_expense')} €</Text>
+              <Text style={styles.expense}>{navigation.getParam('favorSelected').favor_expense} €</Text>
             </View>
         </View>
         {isCandidated ? 
@@ -83,7 +83,7 @@ export default function FavorDetails({ navigation }) {
                 </TouchableOpacity>          
               <View style={styles.subAreaDeadline}>
                 <Text style={styles.deadlineLabel}>*Application Deadline</Text>
-                <Text style={styles.deadline}>{navigation.getParam('application_deadline').toUTCString()} </Text>
+                <Text style={styles.deadline}>{navigation.getParam('favorSelected').application_deadline.toUTCString()} </Text>
             </View>
         </View>
         }
