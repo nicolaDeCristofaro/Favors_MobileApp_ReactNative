@@ -82,11 +82,15 @@ export default function Card(props) {
                   <Text style={{ paddingLeft: 3, fontSize: 18, fontWeight: 'bold'}}> 
                     { user.first_name } { user.last_name } 
                   </Text>
+                  {props.idUserLoggedIn == props.item.id_user ?
+                    <Text style={{ color: 'blue', marginLeft: '40%', fontSize: 18, fontWeight: 'bold'}}>(Your post)</Text>
+                    :<Text></Text>
+                  }
               </View>
               <View style={styles.cardContent}>
                   <View style={{ padding: 8}}>
                       <Text style={styles.titlePost}> { props.item.title }</Text>
-                      <Text style={styles.descriptionPost}> { props.item.description }</Text>
+                      <Text style={styles.descriptionPost}> { props.item.description.substring(0,82) }...</Text>
                       <View style={styles.keywordsArea}>
                         {myKeywords.map((value, index) => {
                           return <Text key={index} style={styles.keyword}> #{value} </Text>

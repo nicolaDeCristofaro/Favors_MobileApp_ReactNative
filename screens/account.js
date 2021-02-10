@@ -66,11 +66,13 @@ export default function Account({ navigation }) {
             <View style={styles.subAreaAccuracy}>
                 <Ionicons name={'alarm'} color='#4B0082' size={30} />
                 <Text style={styles.accuracyLabel}>Accuracy Index</Text>
+                <Text style={styles.explanation}>(Average accuracy level from reviews)</Text>
                 <Text style={styles.accuracy}>{currentUser.accuracy_index} </Text>
             </View>
               <View style={styles.subAreaReliability}>
                 <Ionicons name={'chevron-down-circle'} color='#4B0082' size={30} />
                 <Text style={styles.reliabilityLabel}>Reliability Index</Text>
+                <Text style={styles.explanation}>(Number of favors exhausted)</Text>
                 <Text style={styles.reliability}>{currentUser.reliability_index} </Text>
             </View>
         </View>
@@ -163,9 +165,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   accuracy: {
-    color: '#ff3abd',
+    color: '#4B0082',
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 38,
+  },
+  explanation: {
+    fontSize: 16,
+    color: 'black',
+    marginLeft: 10
   },
   subAreaReliability:{
     marginRight: 10,
@@ -183,9 +190,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   reliability: {
-    color: '#ff3abd',
+    color: '#4B0082',
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 38,
   },
   favorsPublishedLink: {
     flexDirection: 'row',

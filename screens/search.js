@@ -4,6 +4,8 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { globalStyles } from '../styles/global'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Card from '../components/card';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 export default function Search({ navigation }) {
@@ -11,6 +13,21 @@ export default function Search({ navigation }) {
   const [favors, setFavors] = useState([]);
   const [keywords, setKeywords] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [currentUser, setCurrentUser] = useState({});
+
+
+    //Get the user logged ind from AsyncStorage
+    useEffect(() => {
+      const getData = async () => {
+          try {
+              const jsonValue = await AsyncStorage.getItem('@user');
+              if (jsonValue != null) setCurrentUser(JSON.parse(jsonValue));
+          } catch(e) {
+              console.log(e);
+          }
+      }
+      getData()
+  }, []);
 
 
   var WindowsAzure = require('azure-mobile-apps-client');
@@ -69,7 +86,7 @@ export default function Search({ navigation }) {
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <Card 
-                idUserLoggedIn={navigation.getParam('id')}
+                idUserLoggedIn={currentUser.id}
                 searchText={ searchText }
                 item={ item } 
                 keywords= { keywords }

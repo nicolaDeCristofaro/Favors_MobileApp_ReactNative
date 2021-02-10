@@ -69,13 +69,20 @@ export default function FavorDetails({ navigation }) {
               <Text style={styles.expense}>{navigation.getParam('favorSelected').favor_expense} €</Text>
             </View>
         </View>
-        {isCandidated ? 
-        <View style={styles.candidateArea}> 
-                <View style={styles.subAreaAlreadyCandidated}>
-                  <Text style={styles.alreadyCandidated}>Congratulations!</Text>
-                  <Text style={styles.alreadyCandidated}>You are already candidated. </Text>
-              </View>
-        </View>
+        {navigation.getParam('idUserLoggedIn') == navigation.getParam('favorSelected').id_user ? 
+          <View style={styles.candidateArea}> 
+            <View style={styles.subAreaAlreadyCandidated}>
+              <Text style={styles.alreadyCandidated}>Congratulations, you own this post!</Text>
+              <Text style={styles.alreadyCandidated}>Wait for candidations... </Text>
+            </View>
+          </View>
+        : isCandidated ?
+          <View style={styles.candidateArea}> 
+            <View style={styles.subAreaAlreadyCandidated}>
+              <Text style={styles.alreadyCandidated}>Congratulations!</Text>
+              <Text style={styles.alreadyCandidated}>You are already candidated. </Text>
+            </View>
+          </View>
         :
         <View style={styles.candidateArea}>
               <TouchableOpacity style={{...globalStyles.customBtn, ...styles.candidateButton}} onPress={pressHandler}>

@@ -244,7 +244,7 @@ export default function FavorInsert( {navigation} ) {
                 <View style={{...globalStyles.inputView,...styles.insertPostView}}>
                     <TextInput
                         style={globalStyles.inputText}
-                        placeholder='Insert a dealine...'
+                        placeholder='Insert a dealine (mm/dd/yyyy)...'
                         placeholderTextColor="#fff"
                         onChangeText={formikProps.handleChange('application_deadline')}
                         onBlur={formikProps.handleBlur('application_deadline')} 
