@@ -49,6 +49,7 @@ export default function Search({ navigation }) {
 
   const fetchFavors = () => {
     favorsTable
+    .orderByDescending('creation_date')
     .read()
     .then(successFavors, failure)
   }

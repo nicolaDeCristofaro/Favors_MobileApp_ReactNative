@@ -108,7 +108,7 @@ export default function FavorInsert( {navigation} ) {
                     //Inform the user the post is inserted
                     Alert.alert(
                         "POST INSERTED",
-                        "The favor post is inserted successfully.",
+                        "The favor post is inserted successfully, if you don't see the keywords wait a second and refresh!.",
                         [{
                             text: 'OK',
                             onPress: () => {

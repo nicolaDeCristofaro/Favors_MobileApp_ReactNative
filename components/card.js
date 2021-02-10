@@ -83,7 +83,7 @@ export default function Card(props) {
                     { user.first_name } { user.last_name } 
                   </Text>
                   {props.idUserLoggedIn == props.item.id_user ?
-                    <Text style={{ color: 'blue', marginLeft: '40%', fontSize: 18, fontWeight: 'bold'}}>(Your post)</Text>
+                    <Text style={{ color: 'blue', marginLeft: '38%', fontSize: 18, fontWeight: 'bold'}}>(Your post)</Text>
                     :<Text></Text>
                   }
               </View>

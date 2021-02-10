@@ -36,6 +36,7 @@ export default function Home({ navigation }) {
 
   const fetchFavors = () => {
     favorsTable
+    .orderByDescending('creation_date')
     .read()
     .then(successFavors, failure)
   }
