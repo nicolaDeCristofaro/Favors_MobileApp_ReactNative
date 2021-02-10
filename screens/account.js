@@ -51,7 +51,7 @@ export default function Account({ navigation }) {
                 <View style={styles.userAddressRow}>
                   <View style={styles.userCityRow}>
                     <Text style={styles.userCityText}>
-                      From: {currentUser.nationality}
+                      Nationality: {currentUser.nationality}
                     </Text>
                     <Text style={styles.userCityText}>
                       Living in: {currentUser.living_country}
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         alignItems: 'center',
-        elevation: 1,
         marginTop: -1,
       },
       android: {
