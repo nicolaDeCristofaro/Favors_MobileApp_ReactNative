@@ -6,6 +6,8 @@ export default function Card(props) {
   const [favorsKeywords, setFavorsKeywords] = useState([]);
   const [myKeywords, setMyKeywords] = useState([]);
   const [user, setUser] = useState([]);
+  const [search, setSearch] = useState(false);
+
 
   var WindowsAzure = require('azure-mobile-apps-client');
   var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
@@ -47,6 +49,14 @@ export default function Card(props) {
   }, [props.keywords]);
 
   useEffect(() => {
+    if (props.searchText != null && props.searchText != ''){
+      setSearch(true);
+    }else{
+      setSearch(false);
+    }
+  }, [props.searchText]);
+
+  useEffect(() => {
     var myKeywords = [];
 
     for(var keyword of favorsKeywords){
@@ -58,36 +68,44 @@ export default function Card(props) {
     setMyKeywords(myKeywords);
   }, [favorsKeywords]);
 
+
   return (
-    <TouchableOpacity onPress={ () => props.navigation.navigate('FavorDetails', {...myKeywords, favorSelected: props.item, idUserLoggedIn: props.idUserLoggedIn} )}>
-        <View style={styles.card}>
-            <View style={styles.postOwner}>
-                <Ionicons name={'ios-person'} size={20} />
-                <Text style={{ paddingLeft: 3, fontSize: 18, fontWeight: 'bold'}}> 
-                  { user.first_name } { user.last_name } 
-                </Text>
-            </View>
-            <View style={styles.cardContent}>
-                <View style={{ padding: 8}}>
-                    <Text style={styles.titlePost}> { props.item.title }</Text>
-                    <Text style={styles.descriptionPost}> { props.item.description }</Text>
-                    <View style={styles.keywordsArea}>
-                      {myKeywords.map((value, index) => {
-                         return <Text key={index} style={styles.keyword}> #{value} </Text>
-                      })}
-                    </View>
-                    <View style={styles.otherInfoArea}>
-                      <Text style={styles.reward}> Reward</Text>
-                      <Text style={styles.deadline}>Application Deadline</Text>
-                    </View>
-                    <View style={styles.otherInfoArea}>
-                      <Text style={styles.reward}> { props.item.reward } €</Text>
-                      <Text style={styles.deadline}>{ props.item.application_deadline.toUTCString() }</Text>
-                    </View>
-                </View>
-            </View>
-        </View>
-    </TouchableOpacity>
+    <View>
+    {search && !myKeywords.includes(props.searchText)
+    ?
+      <View></View>
+    :
+      <TouchableOpacity onPress={ () => props.navigation.navigate('FavorDetails', {...myKeywords, favorSelected: props.item, idUserLoggedIn: props.idUserLoggedIn} )}>
+          <View style={styles.card}>
+              <View style={styles.postOwner}>
+                  <Ionicons name={'ios-person'} size={20} />
+                  <Text style={{ paddingLeft: 3, fontSize: 18, fontWeight: 'bold'}}> 
+                    { user.first_name } { user.last_name } 
+                  </Text>
+              </View>
+              <View style={styles.cardContent}>
+                  <View style={{ padding: 8}}>
+                      <Text style={styles.titlePost}> { props.item.title }</Text>
+                      <Text style={styles.descriptionPost}> { props.item.description }</Text>
+                      <View style={styles.keywordsArea}>
+                        {myKeywords.map((value, index) => {
+                          return <Text key={index} style={styles.keyword}> #{value} </Text>
+                        })}
+                      </View>
+                      <View style={styles.otherInfoArea}>
+                        <Text style={styles.reward}> Reward</Text>
+                        <Text style={styles.deadline}>Application Deadline</Text>
+                      </View>
+                      <View style={styles.otherInfoArea}>
+                        <Text style={styles.reward}> { props.item.reward } €</Text>
+                        <Text style={styles.deadline}>{ props.item.application_deadline.toUTCString() }</Text>
+                      </View>
+                  </View>
+              </View>
+          </View>
+      </TouchableOpacity>
+      }
+    </View>
   );
 }
 

@@ -83,7 +83,7 @@ export default function Login({ navigation }) {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.containerLogin}>
               <Text style={styles.logo}>Favors</Text>
-                <View style={{...globalStyles.inputView,...styles.insertPostView}}>
+                <View style={globalStyles.inputView}>
                     <TextInput
                     style={globalStyles.inputText}
                     placeholder='Insert your email...'
@@ -95,9 +95,10 @@ export default function Login({ navigation }) {
                 </View>
                 <Text style={globalStyles.errorText}>{formikProps.touched.email && formikProps.errors.email}</Text>
 
-                <View style={{...globalStyles.inputView,...styles.insertPostView}}>
+                <View style={globalStyles.inputView}>
                     <TextInput
                       style={globalStyles.inputText}
+                      secureTextEntry={true}
                       placeholder='Insert your password...'
                       placeholderTextColor="#fff"
                       onChangeText={formikProps.handleChange('password')}

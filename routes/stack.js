@@ -67,12 +67,29 @@ const AccountStack = createStackNavigator(AccountScreens, {
   },
 });
 
+const SearchScreens = {
+  'Search': {
+    screen: Search
+  },
+  'FavorsDetails': {
+    screen: FavorDetails
+  }
+};
+
+const SearchStack = createStackNavigator(SearchScreens, {
+  defaultNavigationOptions:{
+    headerTransparent: true,
+    headerTitleAlign: 'center',
+    headerTintColor: 'white',
+  },
+});
+
 const TabScreens = {
   Home: {
     screen: HomeDetailsStack,
   },
   Search: {
-    screen: Search,
+    screen: SearchStack,
   },
   FavorInsert: {
     screen: InsertStack,
@@ -118,7 +135,7 @@ const TabNavigator = createBottomTabNavigator(TabScreens, {
       }
 
       // You can return any component that you like here!
-      return <IconComponent name={iconName} size={25} color={tintColor} />;
+      return <IconComponent name={iconName} size={30} color={tintColor} />;
     },
   }),
   tabBarOptions: {
