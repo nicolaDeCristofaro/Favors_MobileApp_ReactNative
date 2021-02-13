@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl} from 'react-native'
+import { ActivityIndicator, StyleSheet, View, FlatList, RefreshControl} from 'react-native'
 import { globalStyles } from '../styles/global'
 import Card from '../components/card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -67,7 +67,7 @@ export default function Home({ navigation }) {
   
   return (
     <View style={globalStyles.container}>
-      {isLoading ? <ActivityIndicator size='large' /> : (
+      {isLoading ? <ActivityIndicator size='large' color='violet'/> : (
           <FlatList
             data={favors}
             keyExtractor={({ id }, index) => id}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity,
+import { ActivityIndicator, StyleSheet, Text, View, TextInput, TouchableOpacity,
         TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../styles/global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,6 +22,7 @@ export default function Login({ navigation }) {
 
     //State
     const [users, setUsers] = useState([]);
+    const [isLoading, setLoading] = useState(true);
 
     //Store the user logged in with AsyncStorage
     const storeData = async (value) => {
@@ -38,85 +39,97 @@ export default function Login({ navigation }) {
     var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
     var usersTable = client.getTable("Users");
 
-    useEffect(() => {
+
+    function successUsers(results) {
+      setUsers(results);
+      setLoading(false);
+    }
+
+    function failure(error) {
+      throw new Error('Error loading data: ', error);
+    }
+
+    const fetchUsers = () => {
       usersTable
-        .read()
-        .then(function (results) {
-          setUsers(results);
-        }, function (error) {
-          console.error(error);
-        })
+      .read()
+      .then(successUsers, failure)
+    }
+    useEffect(() => {
+      fetchUsers()
     }, []);
 
     return (
-      <Formik
-          initialValues={{
-              email: '', 
-              password: ''}}
-          validationSchema={loginValidationSchema}
-          onSubmit={(values, actions) => {
+      <View style={globalStyles.container}>
+      {isLoading ? <ActivityIndicator size='large' color='violet'/> : (
+        <Formik
+            initialValues={{
+                email: '', 
+                password: ''}}
+            validationSchema={loginValidationSchema}
+            onSubmit={(values, actions) => {
 
-              var numItemsRead = users.length;
-              if ( numItemsRead > 0){
-                var found = false;
-          
-                for (var i = 0 ; i < numItemsRead ; i++) {
-                    var user = users[i];
-                    if (values.email === user.email && values.password === user.password){
-                      storeData(user);
-                      actions.resetForm();
-                      navigation.navigate('Home', user);
-                      found = true;
-                    }
+                if ( users.length > 0){
+                  var found = false;
+            
+                  for (var i = 0 ; i < users.length ; i++) {
+                      var user = users[i];
+                      if (values.email === user.email && values.password === user.password){
+                        storeData(user);
+                        actions.resetForm();
+                        navigation.navigate('Home', user);
+                        found = true;
+                      }
+                  }
+                }else{
+                  alert("There are no users stored in the DB");
                 }
-              }else{
-                alert("There are no users stored in the DB");
-              }
-              
-              if (!found){
-                alert('Email or Password do not match an existing user.')
-              }
-                  
-          }}
-        >
-          {formikProps => (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.containerLogin}>
-              <Text style={styles.logo}>Favors</Text>
-                <View style={globalStyles.inputView}>
-                    <TextInput
-                    style={globalStyles.inputText}
-                    placeholder='Insert your email...'
-                    placeholderTextColor="#fff"
-                    onChangeText={formikProps.handleChange('email')}
-                    onBlur={formikProps.handleBlur('email')} 
-                    value={formikProps.values.email}
-                    />
-                </View>
-                <Text style={globalStyles.errorText}>{formikProps.touched.email && formikProps.errors.email}</Text>
-
-                <View style={globalStyles.inputView}>
-                    <TextInput
+                
+                if (!found){
+                  alert('Email or Password do not match an existing user.')
+                }
+                    
+            }}
+          >
+            {formikProps => (
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.containerLogin}>
+                <Text style={styles.logo}>Favors</Text>
+                  <View style={globalStyles.inputView}>
+                      <TextInput
                       style={globalStyles.inputText}
-                      secureTextEntry={true}
-                      placeholder='Insert your password...'
+                      placeholder='Insert your email...'
                       placeholderTextColor="#fff"
-                      onChangeText={formikProps.handleChange('password')}
-                      onBlur={formikProps.handleBlur('password')} 
-                      value={formikProps.values.password}
-                    />
-                </View>
-                <Text style={globalStyles.errorText}>{formikProps.touched.password && formikProps.errors.password}</Text>
+                      onChangeText={formikProps.handleChange('email')}
+                      onBlur={formikProps.handleBlur('email')} 
+                      value={formikProps.values.email}
+                      />
+                  </View>
+                  <Text style={globalStyles.errorText}>{formikProps.touched.email && formikProps.errors.email}</Text>
+
+                  <View style={globalStyles.inputView}>
+                      <TextInput
+                        style={globalStyles.inputText}
+                        secureTextEntry={true}
+                        placeholder='Insert your password...'
+                        placeholderTextColor="#fff"
+                        onChangeText={formikProps.handleChange('password')}
+                        onBlur={formikProps.handleBlur('password')} 
+                        value={formikProps.values.password}
+                      />
+                  </View>
+                  <Text style={globalStyles.errorText}>{formikProps.touched.password && formikProps.errors.password}</Text>
 
 
-                <TouchableOpacity style={globalStyles.customBtn} onPress={formikProps.handleSubmit}>
-                    <Text style={globalStyles.customBtnText}>LOGIN</Text>
-                </TouchableOpacity>
-            </View>
-            </TouchableWithoutFeedback>
+                  <TouchableOpacity style={globalStyles.customBtn} onPress={formikProps.handleSubmit}>
+                      <Text style={globalStyles.customBtnText}>LOGIN</Text>
+                  </TouchableOpacity>
+              </View>
+              </TouchableWithoutFeedback>
 
-          )}
-        </Formik>
+            )}
+          </Formik>
+      )}
+      </View>
     );
 }
 

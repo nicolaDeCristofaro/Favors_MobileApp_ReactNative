@@ -72,7 +72,7 @@ export default function FavorDetails({ navigation }) {
         {navigation.getParam('idUserLoggedIn') == navigation.getParam('favorSelected').id_user ? 
           <View style={styles.candidateArea}> 
             <View style={styles.subAreaAlreadyCandidated}>
-              <Text style={styles.alreadyCandidated}>Congratulations, you own this post!</Text>
+              <Text style={styles.alreadyCandidated}>You own this post!</Text>
               <Text style={styles.alreadyCandidated}>Wait for candidations... </Text>
             </View>
           </View>
@@ -180,6 +180,6 @@ const styles = StyleSheet.create({
   alreadyCandidated: {
     fontSize:20,
     fontWeight: 'bold',
-    color: '#7CFC00',
+    color: 'violet',
   }
 });
