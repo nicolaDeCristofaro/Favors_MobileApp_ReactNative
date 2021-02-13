@@ -145,7 +145,7 @@ export default function FavorInsert( {navigation} ) {
                     }
                 }]);
         }
-    }, [titleDirty, descDirty, favorToInsert]);
+    }, [ favorToInsert]);
     
     return (
         <Formik
