@@ -30,6 +30,7 @@ export default function FavorInsert( {navigation} ) {
     const [currentUser, setCurrentUser] = useState(null);
     const [titleDirty, setTitleDirty] = useState(false);
     const [descDirty, setDescDirty] = useState(false);
+    const [oldDate, setOldDate] = useState(false);
     const [favorToInsert, setFavorToInsert] = useState(null);
     const [formActions, setFormActions] = useState(null);
 
@@ -100,7 +101,7 @@ export default function FavorInsert( {navigation} ) {
 
     useEffect(() => {
         
-        if((!descDirty) && (!titleDirty) && (favorToInsert != null)){
+        if((!descDirty) && (!titleDirty) && (favorToInsert != null) && (!oldDate)){
             //Title and Desc are clean, so you can procede to posting
             favorsTable
                 .insert(favorToInsert)
@@ -144,6 +145,16 @@ export default function FavorInsert( {navigation} ) {
                         console.log("Bad desc")
                     }
                 }]);
+        }else if(oldDate){
+            Alert.alert(
+                "BAD DATE",
+                "The application_deadline is an old date, insert a date from tomorrow on.",
+                [{
+                    text: 'OK',
+                    onPress: () => {
+                        console.log("Bad date")
+                    }
+                }]);
         }
     }, [ favorToInsert]);
     
@@ -170,6 +181,13 @@ export default function FavorInsert( {navigation} ) {
                 .then(([responseTitle, responseDescription]) => {
                     //Both the response are available
 
+                    values.application_deadline=new Date(values.application_deadline);
+                    const today = new Date()
+                    const tomorrow = new Date(today)
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    if( values.application_deadline < tomorrow) setOldDate(true);
+                    else setOldDate(false);
+
                     if( responseTitle != null && responseTitle.terms != null && responseTitle.terms.length > 0) setTitleDirty(true);
                     else setTitleDirty(false);
                     if( responseDescription != null && responseDescription.terms != null && responseDescription.terms.length > 0) setDescDirty(true);
@@ -180,7 +198,6 @@ export default function FavorInsert( {navigation} ) {
                     values.favor_expense = parseFloat(values.favor_expense);
                     values.reward = parseFloat(values.reward);
                     values.creation_date= new Date();
-                    values.application_deadline=new Date(values.application_deadline);
                     values.id_user=currentUser.id;
 
                     setFavorToInsert(JSON.stringify(values));

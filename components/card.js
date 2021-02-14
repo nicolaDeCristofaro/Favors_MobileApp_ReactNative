@@ -74,6 +74,8 @@ export default function Card(props) {
     {search && !myKeywords.includes(props.searchText)
     ?
       <View></View>
+    : props.item.application_deadline < new Date() ?
+      <View></View>
     :
       <TouchableOpacity onPress={ () => props.navigation.navigate('FavorDetails', {...myKeywords, favorSelected: props.item, idUserLoggedIn: props.idUserLoggedIn} )}>
           <View style={styles.card}>
