@@ -36,7 +36,7 @@ export default function Login({ navigation }) {
 
     //Azure Client services
     var WindowsAzure = require('azure-mobile-apps-client');
-    var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
+    var client = new WindowsAzure.MobileServiceClient('<insert-your-mobileApp-endpoint>');
     var usersTable = client.getTable("Users");
 
 

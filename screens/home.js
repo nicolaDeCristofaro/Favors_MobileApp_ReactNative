@@ -16,7 +16,7 @@ export default function Home({ navigation }) {
   var WindowsAzure = require('azure-mobile-apps-client');
 
   // Create a reference to the Azure App Service
-  var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
+  var client = new WindowsAzure.MobileServiceClient('<insert-your-mobileApp-endpoint>');
 
   var favorsTable = client.getTable("Favors");
   var keywordsTable = client.getTable("Keywords");

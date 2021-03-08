@@ -10,7 +10,7 @@ export default function Card(props) {
 
 
   var WindowsAzure = require('azure-mobile-apps-client');
-  var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
+  var client = new WindowsAzure.MobileServiceClient('<insert-your-mobileApp-endpoint>');
   var favorsKeywordsTable = client.getTable("Favors_Keywords");
   var usersTable = client.getTable("Users");
 

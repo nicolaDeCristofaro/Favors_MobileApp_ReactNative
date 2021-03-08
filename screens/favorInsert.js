@@ -40,9 +40,9 @@ export default function FavorInsert( {navigation} ) {
     const { CognitiveServicesCredentials } = require("@azure/ms-rest-azure-js");
     var WindowsAzure = require('azure-mobile-apps-client');
   
-    var azureMobileClient = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
-    let contentModeratorKey = 'be1c58ed1a73426eb45cebb1f26e3f89';
-    let contentModeratorEndpoint = 'https://favors-post-moderator.cognitiveservices.azure.com/';
+    var azureMobileClient = new WindowsAzure.MobileServiceClient('<insert-your-mobileApp-endpoint>');
+    let contentModeratorKey = '<insert-your-contentModerator-key>';
+    let contentModeratorEndpoint = '<insert-your-contentModerator-endpoint>';
 
     const cognitiveServiceCredentials = new CognitiveServicesCredentials(contentModeratorKey);
     const contentModeratorClient = new ContentModeratorClient(cognitiveServiceCredentials, contentModeratorEndpoint);
@@ -80,13 +80,13 @@ export default function FavorInsert( {navigation} ) {
         //console.log(event);
 
 
-        const topicURL = "https://favors-topic.northeurope-1.eventgrid.azure.net/api/events"
+        const topicURL = "<insert-your-eventGridTopic-endpoint>/api/events"
         fetch(topicURL, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'aeg-sas-key': 'FiLyHEUOu0vPvtxY98vtf0SCVYyPmnY1eFCdrJulQGk='
+                'aeg-sas-key': '<insert-your-eventGrid-key>'
             },
             body: event,  
         })

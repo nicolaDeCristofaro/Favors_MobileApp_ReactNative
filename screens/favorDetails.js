@@ -9,7 +9,7 @@ export default function FavorDetails({ navigation }) {
     const [isCandidated, setIsCandidated] = useState(false);
 
     var WindowsAzure = require('azure-mobile-apps-client');
-    var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
+    var client = new WindowsAzure.MobileServiceClient('<insert-your-mobileApp-endpoint>');
     var favorsCandidatesTable = client.getTable("Favors_Candidates");
 
     function successFavorsCandidates(results) {

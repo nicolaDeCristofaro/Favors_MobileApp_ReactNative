@@ -31,7 +31,7 @@ export default function FavorsPublished({ navigation }) {
   const [myFavors, setMyFavors] = useState([]);
 
   var WindowsAzure = require('azure-mobile-apps-client');
-  var client = new WindowsAzure.MobileServiceClient('https://favors-app.azurewebsites.net');
+  var client = new WindowsAzure.MobileServiceClient('<insert-your-mobileApp-endpoint>');
   var favorsTable = client.getTable("Favors");
 
   function successFavors(results) {
